@@ -1,27 +1,29 @@
 # DealTrack CRM
 
-Небольшая CRM для управления сделками. Делал для себя — устал от Excel и не хотел платить за AmoCRM ради простых задач.
+Небольшая CRM для управления сделками и быстрой аналитики по воронке. Делал для себя — устал от Excel и не хотел платить за AmoCRM ради простых задач.
 
 **[Demo](https://dealtrack-crm.vercel.app)** · **[GitHub](https://github.com/SemenAnatoli/dealtrack-crm)**
 
 ## Что умеет
 
+- BI-дашборд в стиле CRM analytics: метрики, line/bar/donut charts, таблица эффективности агентов
+- Глобальные фильтры по владельцу, стадии, pipeline-статусу и поиску
 - Kanban-доска со стадиями сделки, drag-and-drop между колонками
-- Список контактов с привязкой к сделкам
-- Дашборд с суммами по стадиям (Recharts)
-- Создание и редактирование через модальные формы с валидацией
+- CRUD для сделок и контактов с модальными формами и валидацией
+- Оптимистичное обновление стадии сделки через TanStack Query
+- Code splitting страниц для аккуратной Vercel-сборки
 
 ## Стек
 
-React 18 + TypeScript + Vite
+React 19 + TypeScript + Vite
 
-Zustand — для UI-стейта (открыта ли модалка, активные фильтры)  
+Zustand — для UI-стейта (модалки, активные фильтры)  
 TanStack Query — для запросов к Supabase, кэш и оптимистичные обновления  
 React Hook Form + Zod — формы, не хотел городить useState на каждый инпут  
 @dnd-kit — drag-and-drop  
 Supabase — база данных, не хотелось поднимать свой бэкенд  
 Tailwind CSS v4  
-Vitest — unit-тесты на stores и утилиты
+Vitest — unit-тесты на stores и утилиты бизнес-метрик
 
 ## Запуск
 
@@ -36,6 +38,12 @@ SQL для создания таблиц — в `supabase/schema.sql`.
 
 ```bash
 npm run dev
+```
+
+## Production build
+
+```bash
+npm run build
 ```
 
 ## Тесты

@@ -24,6 +24,21 @@ export async function createContact(
   return data
 }
 
+export async function updateContact(
+  id: string,
+  payload: Partial<Omit<Contact, 'id' | 'created_at'>>
+): Promise<Contact> {
+  const { data, error } = await supabase
+    .from('contacts')
+    .update(payload)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw new Error(error.message)
+  return data
+}
+
 export async function deleteContact(id: string): Promise<void> {
   const { error } = await supabase.from('contacts').delete().eq('id', id)
   if (error) throw new Error(error.message)

@@ -34,6 +34,8 @@ export default function DealModal() {
   })
 
   useEffect(() => {
+    if (!isDealModalOpen) return
+
     if (editingDeal) {
       reset({
         title: editingDeal.title,
@@ -45,7 +47,7 @@ export default function DealModal() {
     } else {
       reset({ title: '', amount: 0, stage: 'lead', contact_id: null, notes: null })
     }
-  }, [editingDeal, reset])
+  }, [editingDeal, isDealModalOpen, reset])
 
   async function onSubmit(data: FormData) {
     const payload = { ...data, contact_id: data.contact_id || null, notes: data.notes || null }
@@ -59,10 +61,13 @@ export default function DealModal() {
 
   if (!isDealModalOpen) return null
 
+  const isSaving = isSubmitting || createDeal.isPending || updateDeal.isPending
+  const submitError = createDeal.error ?? updateDeal.error
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/40" onClick={closeDealModal} />
-      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
+      <div className="relative mx-4 max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-xl bg-white p-6 shadow-xl">
         <h2 className="text-lg font-bold text-slate-800 mb-5">
           {editingDeal ? 'Редактировать сделку' : 'Новая сделка'}
         </h2>
@@ -111,6 +116,12 @@ export default function DealModal() {
             />
           </Field>
 
+          {submitError && (
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+              {submitError.message}
+            </p>
+          )}
+
           <div className="flex gap-3 pt-2">
             <button
               type="button"
@@ -121,10 +132,10 @@ export default function DealModal() {
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="flex-1 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 disabled:opacity-60 transition-colors"
+              disabled={isSaving}
+              className="flex-1 rounded-lg bg-[#0076c8] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#07579d] disabled:opacity-60"
             >
-              {isSubmitting ? 'Сохранение...' : editingDeal ? 'Сохранить' : 'Создать'}
+              {isSaving ? 'Сохранение...' : editingDeal ? 'Сохранить' : 'Создать'}
             </button>
           </div>
         </form>

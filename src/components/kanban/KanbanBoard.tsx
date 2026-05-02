@@ -2,7 +2,6 @@ import { useState } from 'react'
 import {
   DndContext,
   type DragEndEvent,
-  type DragOverEvent,
   type DragStartEvent,
   PointerSensor,
   useSensor,
@@ -17,7 +16,7 @@ import KanbanColumn from './KanbanColumn'
 import DealCard from './DealCard'
 
 export default function KanbanBoard() {
-  const { data: deals = [], isLoading } = useDeals()
+  const { data: deals = [], isLoading, error } = useDeals()
   const updateStage = useUpdateDealStage()
   const [activeDeal, setActiveDeal] = useState<Deal | null>(null)
 
@@ -36,18 +35,6 @@ export default function KanbanBoard() {
   function handleDragStart({ active }: DragStartEvent) {
     const deal = deals.find((d) => d.id === active.id)
     setActiveDeal(deal ?? null)
-  }
-
-  function handleDragOver({ active, over }: DragOverEvent) {
-    if (!over) return
-    const overId = over.id as string
-    const isStage = DEAL_STAGES.some((s) => s.id === overId)
-    if (!isStage) return
-
-    const deal = deals.find((d) => d.id === active.id)
-    if (deal && deal.stage !== overId) {
-      updateStage.mutate({ id: deal.id, stage: overId as DealStage })
-    }
   }
 
   function handleDragEnd({ active, over }: DragEndEvent) {
@@ -72,12 +59,19 @@ export default function KanbanBoard() {
     }
   }
 
+  if (error) {
+    return (
+      <p className="rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
+        {error.message}
+      </p>
+    )
+  }
+
   return (
     <DndContext
       sensors={sensors}
       collisionDetection={closestCorners}
       onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
       <div className="flex gap-4 overflow-x-auto pb-4">

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useUIStore } from '@/store/uiStore'
-import type { Deal } from '@/types'
+import type { Contact, Deal } from '@/types'
 
 const mockDeal: Deal = {
   id: '1',
@@ -13,12 +13,22 @@ const mockDeal: Deal = {
   updated_at: '2026-01-01',
 }
 
+const mockContact: Contact = {
+  id: 'contact-1',
+  name: 'Алексей Петров',
+  email: 'alexey@mail.ru',
+  phone: '+7 900 123-45-67',
+  company: 'ООО Ромашка',
+  created_at: '2026-01-01',
+}
+
 describe('uiStore', () => {
   beforeEach(() => {
     useUIStore.setState({
       isDealModalOpen: false,
       isContactModalOpen: false,
-      editingDeal: undefined,
+      editingDeal: null,
+      editingContact: null,
     })
   })
 
@@ -44,7 +54,15 @@ describe('uiStore', () => {
   it('управляет модалкой контакта', () => {
     useUIStore.getState().openContactModal()
     expect(useUIStore.getState().isContactModalOpen).toBe(true)
+    expect(useUIStore.getState().editingContact).toBeNull()
     useUIStore.getState().closeContactModal()
     expect(useUIStore.getState().isContactModalOpen).toBe(false)
+    expect(useUIStore.getState().editingContact).toBeNull()
+  })
+
+  it('открывает модалку контакта для редактирования', () => {
+    useUIStore.getState().openContactModal(mockContact)
+    expect(useUIStore.getState().isContactModalOpen).toBe(true)
+    expect(useUIStore.getState().editingContact?.id).toBe('contact-1')
   })
 })

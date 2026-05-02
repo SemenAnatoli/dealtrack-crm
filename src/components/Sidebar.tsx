@@ -1,40 +1,61 @@
 import { NavLink } from 'react-router-dom'
+import { useState } from 'react'
+import { useFiltersStore } from '@/store/filtersStore'
 
 const navItems = [
-  { to: '/dashboard', label: 'Дашборд',   icon: '📊' },
-  { to: '/pipeline',  label: 'Pipeline',  icon: '🗂️' },
-  { to: '/deals',     label: 'Сделки',    icon: '💼' },
-  { to: '/contacts',  label: 'Контакты',  icon: '👥' },
+  { to: '/dashboard', label: 'Overview' },
+  { to: '/pipeline', label: 'Agents' },
+  { to: '/deals', label: 'Deals' },
+  { to: '/contacts', label: 'Contacts' },
 ]
 
 export default function Sidebar() {
+  const resetFilters = useFiltersStore((state) => state.resetFilters)
+  const [isConfigured, setIsConfigured] = useState(false)
+
+  function setupDashboard() {
+    resetFilters()
+    setIsConfigured(true)
+    window.setTimeout(() => setIsConfigured(false), 1400)
+  }
+
   return (
-    <aside className="w-56 shrink-0 bg-white border-r border-slate-200 flex flex-col">
-      <div className="px-5 py-5 border-b border-slate-200">
-        <span className="text-lg font-bold text-slate-800">DealTrack</span>
-        <span className="ml-1 text-xs text-slate-400">CRM</span>
+    <header className="grid min-h-14 grid-cols-1 bg-gradient-to-r from-[#064f9b] via-[#0875bf] to-[#13a6d6] shadow-[0_8px_24px_rgba(7,87,157,0.24)] lg:grid-cols-[520px_minmax(0,1fr)_152px]">
+      <div className="flex items-center gap-3 bg-gradient-to-r from-white via-[#eef7ff] to-[#d8efff] px-4 py-2">
+        <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-[#08b3dc] to-[#0769b4] text-xl font-black text-white shadow-[0_8px_18px_rgba(8,117,191,0.28)]">
+          D
+        </div>
+        <div className="leading-tight">
+          <h1 className="text-[22px] font-bold text-slate-900">CRM dashboard</h1>
+          <p className="text-[10px] font-bold uppercase tracking-wide text-[#0875bf]">DealTrack.io</p>
+        </div>
       </div>
-      <nav className="flex-1 p-3 space-y-1">
-        {navItems.map(({ to, label, icon }) => (
+      <nav className="flex items-center gap-2 overflow-x-auto px-3 py-2">
+        {navItems.map(({ to, label }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              `min-w-24 shrink-0 rounded-md px-4 py-2 text-center text-xs font-semibold text-white transition-all ${
                 isActive
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-white/24 shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_6px_14px_rgba(4,42,84,0.18)]'
+                  : 'hover:bg-white/14'
               }`
             }
           >
-            <span>{icon}</span>
             {label}
           </NavLink>
         ))}
       </nav>
-      <div className="p-4 border-t border-slate-200 text-xs text-slate-400">
-        v1.0.0
+      <div className="flex items-center px-3 py-2 lg:justify-end">
+        <button
+          type="button"
+          onClick={setupDashboard}
+          className="w-full rounded-md bg-white px-3 py-2.5 text-xs font-bold text-[#07579d] shadow-[0_6px_16px_rgba(4,42,84,0.18)] transition-colors hover:bg-[#eef7ff]"
+        >
+          {isConfigured ? 'Dashboard ready' : 'Setup dashboard'}
+        </button>
       </div>
-    </aside>
+    </header>
   )
 }
