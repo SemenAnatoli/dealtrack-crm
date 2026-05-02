@@ -22,6 +22,7 @@ TanStack Query — для запросов к Supabase, кэш и оптимис
 React Hook Form + Zod — формы, не хотел городить useState на каждый инпут  
 @dnd-kit — drag-and-drop  
 Supabase — база данных, не хотелось поднимать свой бэкенд  
+LocalStorage fallback — демо остается рабочим на Vercel даже без Supabase env  
 Tailwind CSS v4  
 Vitest — unit-тесты на stores и утилиты бизнес-метрик
 
@@ -33,7 +34,8 @@ cd dealtrack-crm
 npm install
 ```
 
-Нужен `.env` с ключами Supabase (пример в `.env.example`).  
+Для подключения Supabase нужен `.env` с ключами Supabase (пример в `.env.example`).  
+Если переменные не заданы, приложение автоматически работает в demo-режиме на localStorage.
 SQL для создания таблиц — в `supabase/schema.sql`.
 
 ```bash
